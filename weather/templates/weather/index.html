@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Температура</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Иконки Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .weather-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .weather-card:hover {
+            transform: translateY(-5px);
+        }
+        .weather-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem 1rem;
+        }
+        .temperature-display {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin: 1rem 0;
+        }
+        .weather-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+        }
+        .form-control {
+            border-radius: 50px;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="weather-card">
+                    <!-- Заголовок карточки -->
+                    <div class="weather-header text-center">
+                        <h1 class="display-5 fw-bold mb-3">
+                            <i class="bi bi-thermometer-sun me-2"></i>Температура
+                        </h1>
+                        <p class="mb-0 opacity-75">Узнайте текущую погоду в любом городе</p>
+                    </div>
+
+                    <!-- Тело карточки -->
+                    <div class="card-body p-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <div class="input-group input-group-lg">
+                                    <input type="text"
+                                           name="city_name"
+                                           class="form-control"
+                                           placeholder="Введите город..."
+                                           required>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-cloud-sun me-2"></i>Узнать температуру
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Блок ошибки -->
+                        {% if weather_data.error %}
+                        <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Ошибка:</strong> {{ weather_data.error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+
+                        <!-- Блок с информацией о погоде -->
+                        {% if weather_data.city %}
+                        <div class="weather-info text-center mt-4 animate__animated animate__fadeIn">
+                            <h2 class="h3 mb-3 text-primary">{{ weather_data.city }}</h2>
+
+                            <div class="temperature-display text-gradient">
+                                <strong>{{ weather_data.temperature }}°C</strong>
+                            </div>
+
+                            <div class="mb-3">
+                                <img src="http://openweathermap.org/img/wn/{{ weather_data.icon }}@2x.png"
+                                     class="weather-icon"
+                                     alt="Погода">
+                            </div>
+
+                            <p class="fs-5 text-muted mb-4 text-capitalize">
+                                {{ weather_data.description }}
+                            </p>
+
+                            <!-- Дополнительная информация -->
+                            <div class="row text-center g-3">
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3">
+                                        <i class="bi bi-wind text-primary fs-4"></i>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Ветер</small>
+                                            <div class="fw-bold">5 м/с</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3">
+                                        <i class="bi bi-droplet text-primary fs-4"></i>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Влажность</small>
+                                            <div class="fw-bold">65%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Футер карточки -->
+                    <div class="card-footer text-center py-3 bg-transparent">
+                        <small class="text-muted">
+                            Данные предоставлены OpenWeatherMap
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
