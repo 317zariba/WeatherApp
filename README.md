@@ -2,7 +2,7 @@
 
 Простое веб-приложение для отображения погоды с использованием Django и API OpenWeatherMap.
 
-![Скриншот приложения](https://via.placeholder.com/800x400?text=Weather+App+Screenshot)
+![Скриншот приложения] https://raw.githubusercontent.com/317zariba/WeatherApp/refs/heads/main/appearence.png
 
 ## 📁 Структура проекта
 
